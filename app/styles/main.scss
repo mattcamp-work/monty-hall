@@ -34,6 +34,20 @@ li.door {
      //background-color: violet;
   }
 
+  &.picked:after {
+
+
+      content:"picked";
+      position: absolute;
+      top:0;
+      right:0;
+      height:20px;
+      width: 30px;
+      color:yellow;
+      background-color: violet;
+
+  }
+
   &.winner {
     background-color: yellow
   }

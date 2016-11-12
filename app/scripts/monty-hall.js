@@ -56,12 +56,15 @@ function addPrize() {
 }
 
 
-function pickADoor(){
+function hostPicksADoor(){
 
 
 	var randomLoser = Math.floor(Math.random()*$('ul.doors li:not(.prize)').length);
 
 	$('ul.doors li:not(.prize)').eq(randomLoser).addClass('loser');
+
+
+
 
 }
 
@@ -70,6 +73,13 @@ function updateVals() {
 	
 	$(".wins").html(App._wins);
 	$(".losses").html(App._losses);
+	
+}
+
+
+
+function userPicksADoor() {
+
 	
 }
 
@@ -84,6 +94,8 @@ function _reset() {
 	addPrize();
 
 	$("li.door").click(function(event){
+
+
 
 	if($(this).hasClass('prize')) {
 
@@ -114,7 +126,9 @@ $("body #doorPick").click(function(e){
 
 	e.preventDefault();
 
-	pickADoor();
+	hostPicksADoor();
+
+
 
 });
 
