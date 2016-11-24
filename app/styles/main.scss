@@ -16,8 +16,8 @@ ul.doors {
 
 li.door {
   display: inline-block;
-  width: 100px;
-  height: 400px;
+  width: 67px;
+  height: 100px;
   background-color: brown;
   position: relative;
   margin:20px;
@@ -31,7 +31,7 @@ li.door {
       left:0;
       height:20px;
       width: 20px;
-     //background-color: violet;
+     background-color: violet;
   }
 
   &.picked:after {
