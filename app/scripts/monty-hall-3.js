@@ -14,16 +14,28 @@ $(document).ready(function() {
 
     MontyHall._settings = {
 
-        doorCount: 15,
-        prizeCount: 3,
+        doorCount: 5,
+        prizeCount: 1,
         goatDoors: [],
-        hostOpenCount: 3,
-        userOpenCount: 3,
-        userPickCount: 3,
-        winThreshold:2,
+        hostOpenCount: 1,
+        userOpenCount: 1,
+        winThreshold:1,
 
         check:function() {
             return (this.doorCount >= (this.hostOpenCount+this.userOpenCount)) && (this.winThreshold<=this.prizeCount) && (this.prizeCount>=this.userOpenCount);
+        }
+
+    }
+
+    MontyHall._score = {
+
+        wins:0,
+        games:0,
+        losses: function() {
+            return this.games - this.wins;
+        },
+        winRate: function() {
+            return ((this.wins / this.games).toFixed(2)*100).toFixed()+"%";
         }
 
     }
@@ -40,9 +52,9 @@ $(document).ready(function() {
         _playStep: function(_step,stepDelayOverride) {
 
 
-             var _self = this;
+             var _this = this;
   
-             var localStepDelay = _self.stepDelay;
+             var localStepDelay = _this.stepDelay;
 
                 if(typeof stepDelayOverride != 'undefined') {
                 localStepDelay = stepDelayOverride;
@@ -51,26 +63,26 @@ $(document).ready(function() {
 
              window.setTimeout(function(){
 
-                     _self.steps[_step].call();                 
+                     _this.steps[_step].call();                 
 
                 },localStepDelay);
 
         },
         _next: function(stepDelayOverride){
-            var _self = this;
+            var _this = this;
 
 
             if(this.currentStep+1<steps.length) {
-                _self._playStep(this.currentStep+1,stepDelayOverride);
-                _self.currentStep++;
+                _this._playStep(this.currentStep+1,stepDelayOverride);
+                _this.currentStep++;
             }
 
         },
         _back: function() {
 
             if (this.currentStep-1>0) {
-               _self._playStep(this.currentStep-1);
-               _self.currentStep--;
+               _this._playStep(this.currentStep-1);
+               _this.currentStep--;
             }
         }
     
@@ -128,28 +140,39 @@ $(document).ready(function() {
 
     MontyHall._endGame = function() {
 
+
+        var _this = this;
+
+        _this._score.games++;
+
+
+        var eventMessage = "sorry, try again";
+
         if($("li.door-frame.prize.opened").length >= this._settings.winThreshold) {
-           var m = confirm("congratulations, you won!");
-           if (m == true) {
-            MontyHall._startGame();
-           }
+       
+            _this._score.wins++;
+            eventMessage = "congratulations, you won!"
+
         } else {
-
              $("li.door-frame.prize").addClass("opened");
+        }
 
-             window.setTimeout(function(){
+        
 
-                 var m = confirm("Try Again");
+         $(".wins").html(_this._score.winRate());
+          $(".losses").html(_this._score.losses());
 
 
+           window.setTimeout(function(){
+
+                  var m = confirm(eventMessage);
                    if (m == true) {
                     MontyHall._startGame();
                    }
 
-             },2000);
 
-           
-        }
+             },1500);
+
     }
 
     MontyHall._getRandUniq = function(randScope, randCount) {
@@ -162,7 +185,11 @@ $(document).ready(function() {
             randNumArray[randNumArray.length] = randNum;
         }
 
+        //debugger;
+
         return randNumArray;
+
+
 
     }
 
@@ -181,14 +208,15 @@ $(document).ready(function() {
 
     MontyHall._hostOpensDoor = function() {
 
+        var _this = this;
 
         var availableDoors = $(".door-frame.goat:not('.picked')");
 
-        var hostPicks = this._getRandUniq(availableDoors.length, this._settings.hostOpenCount);
+        var hostPicks = _this._getRandUniq(availableDoors.length, _this._settings.hostOpenCount);
 
-        //debugger;
+    
 
-        var _self = this;
+
 
         $(hostPicks).each(function(_key, _var) {
 
@@ -197,7 +225,7 @@ $(document).ready(function() {
 
         });
 
-       // MontyHall._userOpensDoor();
+
 
        MontyHall._timeline._next(100);
     }
@@ -205,26 +233,26 @@ $(document).ready(function() {
     MontyHall._userPicksDoor = function() {
 
 
-        var _self = this;
+        var _this = this;
 
         var increment = 1;
 
 
         $("li.door-frame").on("click", function(e) {
 
-            // debugger;
+        
 
             if ($(this).is(":not('.picked')")) {
 
                  $(this).addClass('picked');
 
 
-                if ($("li.door-frame.picked").length >= _self._settings.userPickCount ) {
+                if ($("li.door-frame.picked").length >= _this._settings.userOpenCount ) {
 
                    // $(".picked").last().removeClass('picked');
                     MontyHall._timeline._next();
 
-                    console.log(_self._settings.userPickCount);
+                    console.log(_this._settings.userOpenCount);
 
                 }
 
@@ -246,14 +274,14 @@ $(document).ready(function() {
 
     MontyHall._userOpensDoor = function() {
 
-        var _self = this;
+        var _this = this;
 
         $("li.door-frame").unbind('click');
 
         $("li.door-frame:not('.opened')").click(function(e) {
             $(this).addClass("opened");             
 
-             if($("li.door-frame.opened:not('.opened-by-host')").length == _self._settings.userOpenCount ) {
+             if($("li.door-frame.opened:not('.opened-by-host')").length == _this._settings.userOpenCount ) {
                   MontyHall._timeline._next(500); 
              }
         });
@@ -269,8 +297,8 @@ $(document).ready(function() {
 
 
         var prizeArray = this._getRandUniq(this._settings.doorCount, this._settings.prizeCount);
-        // debugger;
-
+    
+        console.log("prizeArray"+prizeArray);
         //this._reset();
 
 
@@ -288,7 +316,6 @@ $(document).ready(function() {
                 $(newDoor).append("<div class='physical-prize fa fa-diamond'></div>")
             } else {
 
-                this._settings.goatDoors.push(i)
                 $(newDoor).addClass("goat");
                 $(newDoor).append("<div class='a-live-goat'></div>");
             }
