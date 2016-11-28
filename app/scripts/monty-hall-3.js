@@ -28,7 +28,7 @@ $(document).ready(function() {
         hostOpenCount: 1,
         userOpenCount: 1,
         winThreshold:1,
-        simulation: false,
+        simulation:  true,
         simulationSwitch: false, 
 
         check:function() {
@@ -146,7 +146,7 @@ $(document).ready(function() {
     MontyHall._startGame = function() {
 
 
-      if(this._score.games > 9999) {
+      if(this._score.games > 99999) {
         return;
       }
 
@@ -186,10 +186,23 @@ $(document).ready(function() {
         }
 
         
+        if(_this._settings.simulation ) {
 
-         $(".win-pct").html(_this._score.winRate());
+            if(_this._score.games % 5 == 0) {
+
+              $(".win-pct").html(_this._score.winRate());
+              $(".losses").html(_this._score.losses());
+              $(".games").html(_this._score.games);
+            }
+        
+        } else {
+
+           $(".win-pct").html(_this._score.winRate());
           $(".losses").html(_this._score.losses());
           $(".games").html(_this._score.games);
+
+
+        }
 
 
          /*  window.setTimeout(function(){
@@ -231,7 +244,7 @@ $(document).ready(function() {
 
         this._settings.goatDoors = [];
         this._timeline.currentStep = 0;
-        $(".stage-wrap").html("");
+        $(".stage-wrap ul").html("");
     }
 
 

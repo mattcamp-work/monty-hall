@@ -5,13 +5,15 @@ $icon-font-path: '../fonts/';
 // endbower
 
 
-ul.doors {
-  list-style-type: none;
-  background-color: silver;
-  padding: 20px;
-  width: 100%;
-  max-width: 100%;
-  text-align: center;
+.stage-wrap {
+  min-height: 150px;
+  //background-color: blue;
+  position: relative;
+}
+
+ul.stage {
+  //background-color: red;
+  margin: 0;
 }
 
 li.door-frame {
