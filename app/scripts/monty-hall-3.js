@@ -1,7 +1,15 @@
 /*
 
-how can I use promises for this? 
-try them out, I guess
+
+To Do:
+
+Add in switch logic
+overhaul UI
+  nicer doors  
+rework the reset sequence
+  doors that flip around
+  use bootstrap modals
+  
 
 
 */
@@ -14,18 +22,23 @@ $(document).ready(function() {
 
     MontyHall._settings = {
 
-        doorCount: 5,
+        doorCount: 3,
         prizeCount: 1,
         goatDoors: [],
         hostOpenCount: 1,
         userOpenCount: 1,
         winThreshold:1,
+        simulation: false,
+        simulationSwitch: false, 
 
         check:function() {
-            return (this.doorCount >= (this.hostOpenCount+this.userOpenCount)) && (this.winThreshold<=this.prizeCount) && (this.prizeCount>=this.userOpenCount);
+            return (this.doorCount >= (this.hostOpenCount+this.userOpenCount)) && (this.winThreshold<=this.prizeCount);
         }
 
     }
+
+
+
 
     MontyHall._score = {
 
@@ -35,12 +48,10 @@ $(document).ready(function() {
             return this.games - this.wins;
         },
         winRate: function() {
-            return ((this.wins / this.games).toFixed(2)*100).toFixed()+"%";
+            return ((this.wins / this.games)*100).toFixed(3)+"%";
         }
 
     }
-
-    var Utils = Utils || {};
 
 
 
@@ -56,8 +67,12 @@ $(document).ready(function() {
   
              var localStepDelay = _this.stepDelay;
 
-                if(typeof stepDelayOverride != 'undefined') {
+            if(typeof stepDelayOverride != 'undefined') {
                 localStepDelay = stepDelayOverride;
+            }
+
+             if(MontyHall._settings.simulation) {
+                localStepDelay = 0;
             }
 
 
@@ -99,10 +114,12 @@ $(document).ready(function() {
 
         MontyHall._makeDoors();
         console.log("make doors");
+
      
      }
      steps[1] = function() {
         MontyHall._userPicksDoor();
+        MontyHall._userAutoPick();
         console.log("user picks a door");       
        
      }
@@ -129,12 +146,23 @@ $(document).ready(function() {
     MontyHall._startGame = function() {
 
 
+      if(this._score.games > 9999) {
+        return;
+      }
+
+      if(this._settings.simulation ) {
+        $('.stage-wrap').css({"display":"none"});
+      }
+
        if (this._settings.check()) {
         this._reset();
         this._timeline._playStep(0,400);
     } else {
         alert("problem with settings");
     }
+
+
+
 
     }
 
@@ -154,16 +182,17 @@ $(document).ready(function() {
             eventMessage = "congratulations, you won!"
 
         } else {
-             $("li.door-frame.prize").addClass("opened");
+             //$("li.door-frame.prize").addClass("opened");
         }
 
         
 
-         $(".wins").html(_this._score.winRate());
+         $(".win-pct").html(_this._score.winRate());
           $(".losses").html(_this._score.losses());
+          $(".games").html(_this._score.games);
 
 
-           window.setTimeout(function(){
+         /*  window.setTimeout(function(){
 
                   var m = confirm(eventMessage);
                    if (m == true) {
@@ -171,7 +200,10 @@ $(document).ready(function() {
                    }
 
 
-             },1500);
+             },1500);*/
+
+
+        MontyHall._startGame();
 
     }
 
@@ -213,10 +245,6 @@ $(document).ready(function() {
         var availableDoors = $(".door-frame.goat:not('.picked')");
 
         var hostPicks = _this._getRandUniq(availableDoors.length, _this._settings.hostOpenCount);
-
-    
-
-
 
         $(hostPicks).each(function(_key, _var) {
 
@@ -264,7 +292,7 @@ $(document).ready(function() {
 
 
          
-
+           
          
 
         });
@@ -286,7 +314,64 @@ $(document).ready(function() {
              }
         });
 
+
+         MontyHall._userAutoOpen();
+
        
+    }
+
+
+    MontyHall._userAutoPick = function() {
+
+     var  _this = this;
+
+      if (this._settings.simulation) {
+
+            for (var i = 0; i < _this._settings.userOpenCount; i++) {
+                       
+               var availableDoors = $("li.door-frame:not('.picked')");
+
+               console.log("avail length: "+availableDoors.length)
+
+                  var rand = Math.floor(Math.random()*availableDoors.length);
+
+
+
+                  $(availableDoors).eq(rand).trigger("click");
+
+                  //debugger;
+
+
+            };
+
+      }
+    }
+
+
+    MontyHall._userAutoOpen = function() {
+
+
+
+      var _this = this;
+
+      if (this._settings.simulation) {
+
+            for (var i = 0; i < _this._settings.userOpenCount; i++) {
+
+
+               var availableDoors = $("li.door-frame:not('.opened,.picked')");
+
+                  var rand = Math.floor(Math.random()*availableDoors.length);
+
+                  $(availableDoors).eq(rand).trigger("click");
+
+            };
+
+      }
+
+
+
+
     }
 
 
