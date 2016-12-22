@@ -10,7 +10,15 @@ rework the reset sequence
   doors that flip around
   use bootstrap modals
   
+Do a 60 minute redesign
+  make it look game show-ey
 
+Code 
+make this OOP
+replace the model with arrays/objects, make use of underscore
+come up with a single function to "update stage"
+come up with simulator animation
+  
 
 */
 
@@ -22,10 +30,12 @@ $(document).ready(function() {
 
     MontyHall._settings = {
 
-        doorCount: 100,
+
+        doorCount: 3,
+
         prizeCount: 1,
         goatDoors: [],
-        hostOpenCount: 98,
+        hostOpenCount: 1,
         userOpenCount: 1,
         winThreshold:1,
         simulation:  true,
