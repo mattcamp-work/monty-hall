@@ -1,16 +1,24 @@
 /*
 
-
-To Do:
-
-Add in switch logic
-overhaul UI
-  nicer doors  
-rework the reset sequence
-  doors that flip around
-  use bootstrap modals
+Table of Contents:
   
+Setup
+Steps
 
+init
+
+Functions
+
+user function
+host function 
+timeline functions
+generic / utility functions
+
+
+=== 
+
+clean up timeline function
+use arrays / objects instead of the dom 
 
 */
 
@@ -95,7 +103,7 @@ $(document).ready(function() {
         },
         _back: function() {
 
-            if (this.currentStep-1>0) {
+            if (this.currentStep>1) {
                _this._playStep(this.currentStep-1);
                _this.currentStep--;
             }
@@ -111,11 +119,8 @@ $(document).ready(function() {
      var steps = [];
 
      steps[0] = function() {
-
         MontyHall._makeDoors();
         console.log("make doors");
-
-     
      }
      steps[1] = function() {
         MontyHall._userPicksDoor();

@@ -38,7 +38,7 @@ $(document).ready(function() {
         hostOpenCount: 1,
         userOpenCount: 1,
         winThreshold:1,
-        simulation:  true,
+        simulation:  false,
         simulationSwitch: false, 
 
         check:function() {
