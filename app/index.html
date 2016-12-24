@@ -82,7 +82,7 @@
     <!-- endbuild -->
     
     <!-- build:js scripts/plugins.js -->
-    <script src="/bower_components/bootstrap-sass/assets/javascripts/bootstrap/affix.js"></script>
+    <!-- <script src="/bower_components/bootstrap-sass/assets/javascripts/bootstrap/affix.js"></script>
     <script src="/bower_components/bootstrap-sass/assets/javascripts/bootstrap/alert.js"></script>
     <script src="/bower_components/bootstrap-sass/assets/javascripts/bootstrap/dropdown.js"></script>
     <script src="/bower_components/bootstrap-sass/assets/javascripts/bootstrap/tooltip.js"></script>
@@ -93,7 +93,7 @@
     <script src="/bower_components/bootstrap-sass/assets/javascripts/bootstrap/carousel.js"></script>
     <script src="/bower_components/bootstrap-sass/assets/javascripts/bootstrap/scrollspy.js"></script>
     <script src="/bower_components/bootstrap-sass/assets/javascripts/bootstrap/collapse.js"></script>
-    <script src="/bower_components/bootstrap-sass/assets/javascripts/bootstrap/tab.js"></script>
+    <script src="/bower_components/bootstrap-sass/assets/javascripts/bootstrap/tab.js"></script> -->
     <!-- endbuild -->
 
     <script src="/bower_components/lodash/dist/lodash.js"></script>
@@ -104,30 +104,7 @@
    <!--   <script src="scripts/beach-head.js"></script> -->
 
 
-    <script type="text/javascript">
 
-        (function(){
-
-          var gameElement = $(".stage-wrap");
-
-           /* new montyHallGame(gameElement,{
-                  doorCount: 3,
-                  prizeCount: 1,
-                  goatDoors: [],
-                  hostOpenCount: 98,
-                  userOpenCount: 1,
-                  winThreshold:1,
-                  simulation: false,
-                  hostKnowsPrize: false
-            });*/
-
-
-            new MHgame(gameElement,{
-              myName:"matt is a cool guy"
-            })
-
-        })();
-    </script>
 
 
      <script type="text/javascript">
@@ -136,9 +113,9 @@
 
           var gameElement = $(".stage-wrap");
 
-         
             new MHgame(gameElement,{
-              myName:"matt is a cool guy"
+              myName:"matt is a cool guy",
+              doorCount: 4
             })
 
         })();
