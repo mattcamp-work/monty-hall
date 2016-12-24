@@ -100,12 +100,48 @@
     
     <!-- build:js scripts/main.js -->
     
-    <script src="scripts/monty-hall-3.js"></script>
+    <script src="scripts/monty-hall-4.js"></script>
+   <!--   <script src="scripts/beach-head.js"></script> -->
 
 
     <script type="text/javascript">
 
-      
+        (function(){
+
+          var gameElement = $(".stage-wrap");
+
+           /* new montyHallGame(gameElement,{
+                  doorCount: 3,
+                  prizeCount: 1,
+                  goatDoors: [],
+                  hostOpenCount: 98,
+                  userOpenCount: 1,
+                  winThreshold:1,
+                  simulation: false,
+                  hostKnowsPrize: false
+            });*/
+
+
+            new MHgame(gameElement,{
+              myName:"matt is a cool guy"
+            })
+
+        })();
+    </script>
+
+
+     <script type="text/javascript">
+
+        (function(){
+
+          var gameElement = $(".stage-wrap");
+
+         
+            new MHgame(gameElement,{
+              myName:"matt is a cool guy"
+            })
+
+        })();
     </script>
 
 
