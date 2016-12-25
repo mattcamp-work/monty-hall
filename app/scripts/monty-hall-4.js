@@ -62,7 +62,18 @@ I need a beach head.
 
   MHgame.prototype.options = {
 
-    myName : "my fave color is orange"
+      myName : "my fave color is orange",
+      doorCount: 3,
+      prizeCount: 1,
+      hostDoorCount:1,
+      userDoorCount:1,
+      winThreshhold:1,
+      hostKnowsPrize: false,
+      simulationMode:false,
+      check:function() {
+            return (this.doorCount >= (this.hostOpenCount+this.userOpenCount)) && (this.winThreshold<=this.prizeCount);
+        }
+
 
   }
 
