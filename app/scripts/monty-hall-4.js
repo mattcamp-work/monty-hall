@@ -79,37 +79,44 @@ I need a beach head.
 
 
 
-  MHgame.prototype.stage = function() {
+  MHgame.prototype._buildStage = function() {
 
     var _self = this;
+
+    _self.doors = [];
     
     var Door = function(){};
-    Door.prototype.prize = false;
+    Door.prototype.hasPrize = false;
     Door.prototype.userPicked = false;
     Door.prototype.hostOpened = false;
     Door.prototype.userOpened = false;
 
-    _self.buildStage = function() {
+    var prizeArray = _self.getRandUnique(_self.options.doorCount,_self.options.prizeCount);
 
-      _self.doors = [];
+
 
       for (var i = 0; i < _self.options.doorCount; i++) {
         _self.doors[i] = new Door;
 
+        if (prizeArray.indexOf(i) > -1) {
+          _self.doors[i].hasPrize = true;
+        }
+
       }
 
-    }
-
+      console.log(_self.doors);
 
   }
 
 
-  MHgame.prototype.init = function() {
+  MHgame.prototype._init = function() {
 
     // build stage
     //
 
-    this.stage.buildStage();
+    this._buildStage();
+
+    //this._start();
 
   }
 
