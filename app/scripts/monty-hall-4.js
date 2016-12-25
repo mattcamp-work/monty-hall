@@ -108,6 +108,19 @@ I need a beach head.
 
   }
 
+  MHgame.prototype.renderStage = function() {
+
+    var _self = this;
+
+    if ($(_self.el).children(".door-frame").length > 1) {
+
+      _self.buildDoors();
+
+    } else {
+      _self.updateDoors();
+    }
+  }
+
 
   MHgame.prototype._init = function() {
 
