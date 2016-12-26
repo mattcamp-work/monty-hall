@@ -52,13 +52,7 @@ I need a beach head.
         this._init();
     }
 
-    MHgame.prototype._init = function() {
 
-      var myElement = this.el;
-
-      $(myElement).html(this.options.myName);
-
-    }
 
   MHgame.prototype.options = {
 
@@ -105,21 +99,188 @@ I need a beach head.
       }
 
       console.log(_self.doors);
+      
+      $(_self.el).append("<ul class='stage'></ul>");
+
+      _self.stageElement = $(_self.el).find("ul.stage");
+
+      console.log(_self.stageElement);
 
   }
 
-  MHgame.prototype.renderStage = function() {
+  MHgame.prototype._renderStage = function() {
 
     var _self = this;
 
-    if ($(_self.el).children(".door-frame").length > 1) {
+    if (_self.options.simulationMode) {
+      return;
+    } 
 
-      _self.buildDoors();
+    if ($(_self.stageElement).find("li.door-frame").length < 1) {
+
+       _self._buildDoors();
 
     } else {
-      _self.updateDoors();
+      _self._updateStage();
     }
   }
+
+  MHgame.prototype._buildDoors = function() {
+
+
+    var _self = this;
+
+    var doorCode = "";
+
+    for (var i = 0; i < _self.doors.length; i++) {
+      var doorMarkup = $("<li class='door-frame'><div class='door'></div><div class='prize-container'></div></li>\n\n");
+
+      if(_self.doors[i].hasPrize) {
+          $(doorMarkup).addClass('has-prize');
+      }
+
+       $(_self.stageElement).append(doorMarkup);
+    }
+
+   
+
+  }
+
+  MHgame.prototype._updateStage = function() {
+
+    var _self = this;
+
+    $(_self.stageElement).find('li.door-frame').each(function(_key,_val){
+
+
+      if (_self.doors[_key].userPicked) {
+        $(this).addClass('userPicked');
+
+      }
+
+      if (_self.doors[_key].hostOpened) {
+        $(this).addClass('hostOpened');
+
+      }
+
+      if (_self.doors[_key].userOpened) {
+        $(this).addClass('userOpened');
+
+      }
+
+
+    });
+
+  }
+
+  MHgame.prototype._timeline = {
+
+        steps: [],
+        stepDelay: 1200,
+        currentStep: 0,
+         _playStep: function(_step,stepDelayOverride) {
+
+             var _self = this;
+  
+             var localStepDelay = _self.stepDelay;
+
+            if(typeof stepDelayOverride != 'undefined') {
+                localStepDelay = stepDelayOverride;
+            }
+
+            /* if(MHgame.options.simulationMode) {
+                localStepDelay = 0;
+            } */
+
+
+             window.setTimeout(function(){
+
+                     _self.steps[_step].call();                 
+
+                },localStepDelay);
+
+        },
+         _next: function(stepDelayOverride){
+            var _self = this;
+
+
+            if(this.currentStep+1<steps.length) {
+                _self._playStep(this.currentStep+1,stepDelayOverride);
+                _self.currentStep++;
+            }
+
+        },
+         _back: function() {
+            var _self = this;
+            // not sure if I'll ever need this.
+            if (this.currentStep-1>0) {
+               _self._playStep(this.currentStep-1);
+               _self.currentStep--;
+            }
+        }
+
+  }
+
+MHgame.prototype._userPicksDoor = function() {
+
+  _self = this;
+
+  $(_self.stageElement).find("li.door-frame").on("click",function(){
+      _self.doors[$(this).index()].userPicked = true;
+  });
+
+  console.log(_self.doors);
+  _self._renderStage();
+}
+
+MHgame.prototype._hostOpensDoor = function() {
+
+  var _self  = this;
+
+  var demo = _.omit(_self.doors,function(value,key){
+    return (_self.doors[key].userPicked = true);
+  });
+
+  console.log("yolo: "+demo);
+
+}
+
+MHgame.prototype._userOpensDoor = function() {
+
+}
+
+
+
+MHgame.prototype._timeline.steps[0] = function(){
+
+    this._buildStage();
+    this._renderStage();
+
+    console.log("make doors");
+
+    this._timeline._next(300);
+}
+
+MHgame.prototype._timeline.steps[1] = function(){
+    // user picks door
+    this._userPicksDoor();
+     this._timeline._next(300);
+}
+
+MHgame.prototype._timeline.steps[2] = function(){
+  this._hostOpensDoor();
+    // host opens door
+}
+
+MHgame.prototype._timeline.steps[3] = function(){
+    // user opens door
+}
+
+MHgame.prototype._timeline.steps[4] = {
+    // user opens door
+}
+
+
 
 
   MHgame.prototype._init = function() {
@@ -127,9 +288,11 @@ I need a beach head.
     // build stage
     //
 
-    this._buildStage();
+    //this._start() 
 
     //this._start();
+
+    this._timeline._playStep(0,300);
 
   }
 
