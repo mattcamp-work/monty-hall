@@ -51,8 +51,7 @@ I need a beach head.
         this._options = extend({}, this._options);
         extend(this._options, options);
         this._init();
-        var melf = "I am awesome";
-    }
+     }
 
     MHgame.prototype._score = {
         wins: 0,
@@ -66,7 +65,6 @@ I need a beach head.
 
     MHgame.prototype._options = {
 
-        myName: "my fave color is orange",
         doorCount: 3,
         prizeCount: 1,
         hostDoorCount: 1,
@@ -98,8 +96,6 @@ I need a beach head.
         Door.prototype.id = 0;
 
         var prizeArray = _self._getRandUnique(_self._options.doorCount, _self._options.prizeCount);
-
-
 
         for (var i = 0; i < _self._options.doorCount; i++) {
 
