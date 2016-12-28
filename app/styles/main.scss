@@ -58,15 +58,6 @@ li.door-frame {
   }
 
 
-
-
-  &.winner {
-    background-color: yellow
-  }
-
-  &.loser {
-    background-color: blue;
-  }
 }
 
 
@@ -83,17 +74,27 @@ li.door-frame .physical-prize {
   //background-color: yellow;
 }
 
-li.door-frame .a-live-goat {
-  
-  position: absolute;
-  top:50%;
-  left:0;
-  width: 100%;
-  height: 3em;
-  transform: translate(0,-50%);
-  background: url(../images/goat.png) center center no-repeat;
-  background-size: contain;
+
+
+li.door-frame {
+
+  .prize-container {
+    position: absolute;
+    transform: translate(0,-50%); 
+    width:80%;
+    top:50%;
+    left:10%;
+    min-height: 66%;
+    background: url(../images/goat.png) center center no-repeat;
+    background-size: contain;
+  }
+
+  &.has-prize .prize-container {
+    background: url(../images/car.png) center center no-repeat;
+    background-size: contain;
+  }
 }
+
 
 .browserupgrade {
   margin: 0.2em 0;

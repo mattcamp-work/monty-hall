@@ -29,10 +29,10 @@ I need a beach head.
 
 */
 
-(function(window){
+(function(window) {
 
 
-   'use strict';
+    'use strict';
 
 
 
@@ -40,269 +40,418 @@ I need a beach head.
         for (var key in b) {
             if (b.hasOwnProperty(key)) {
                 a[key] = b[key];
+
             }
         }
         return a;
     }
 
-  function MHgame(el, options) {
+    var MHgame = function(el, options) {
         this.el = el;
-        this.options = extend({}, this.options);
-        extend(this.options, options);
+        this._options = extend({}, this._options);
+        extend(this._options, options);
         this._init();
+        var melf = "I am awesome";
+    }
+
+    MHgame.prototype._score = {
+        wins: 0,
+        games: 0,
+        losses: function() {
+            return this.score.games - this.score.wins
+        }
     }
 
 
 
-  MHgame.prototype.options = {
+    MHgame.prototype._options = {
 
-      myName : "my fave color is orange",
-      doorCount: 3,
-      prizeCount: 1,
-      hostDoorCount:1,
-      userDoorCount:1,
-      winThreshhold:1,
-      hostKnowsPrize: false,
-      simulationMode:false,
-      check:function() {
-            return (this.doorCount >= (this.hostOpenCount+this.userOpenCount)) && (this.winThreshold<=this.prizeCount);
+        myName: "my fave color is orange",
+        doorCount: 3,
+        prizeCount: 1,
+        hostDoorCount: 1,
+        userDoorCount: 1,
+        winThreshhold: 1,
+        hostKnowsPrize: false,
+        simulationMode: false,
+        stepDelay: 1000,
+        check: function() {
+            return (this.doorCount >= (this.hostOpenCount + this.userOpenCount)) && (this.winThreshold <= this.prizeCount);
         }
 
-
-  }
-
-
-
-  MHgame.prototype._buildStage = function() {
-
-    var _self = this;
-
-    _self.doors = [];
-    
-    var Door = function(){};
-    Door.prototype.hasPrize = false;
-    Door.prototype.userPicked = false;
-    Door.prototype.hostOpened = false;
-    Door.prototype.userOpened = false;
-
-    var prizeArray = _self.getRandUnique(_self.options.doorCount,_self.options.prizeCount);
-
-
-
-      for (var i = 0; i < _self.options.doorCount; i++) {
-        _self.doors[i] = new Door;
-
-        if (prizeArray.indexOf(i) > -1) {
-          _self.doors[i].hasPrize = true;
-        }
-
-      }
-
-      console.log(_self.doors);
-      
-      $(_self.el).append("<ul class='stage'></ul>");
-
-      _self.stageElement = $(_self.el).find("ul.stage");
-
-      console.log(_self.stageElement);
-
-  }
-
-  MHgame.prototype._renderStage = function() {
-
-    var _self = this;
-
-    if (_self.options.simulationMode) {
-      return;
-    } 
-
-    if ($(_self.stageElement).find("li.door-frame").length < 1) {
-
-       _self._buildDoors();
-
-    } else {
-      _self._updateStage();
     }
-  }
 
-  MHgame.prototype._buildDoors = function() {
-
-
-    var _self = this;
-
-    var doorCode = "";
-
-    for (var i = 0; i < _self.doors.length; i++) {
-      var doorMarkup = $("<li class='door-frame'><div class='door'></div><div class='prize-container'></div></li>\n\n");
-
-      if(_self.doors[i].hasPrize) {
-          $(doorMarkup).addClass('has-prize');
-      }
-
-       $(_self.stageElement).append(doorMarkup);
-    }
 
    
 
-  }
+    MHgame.prototype._buildStage = function() {
 
-  MHgame.prototype._updateStage = function() {
+        var _self = this;
 
-    var _self = this;
+        _self.doors = [];
 
-    $(_self.stageElement).find('li.door-frame').each(function(_key,_val){
+        var Door = function() {};
+        Door.prototype.hasPrize = false;
+        Door.prototype.userPicked = false;
+        Door.prototype.hostOpened = false;
+        Door.prototype.userOpened = false;
+        Door.prototype.id = 0;
 
-
-      if (_self.doors[_key].userPicked) {
-        $(this).addClass('userPicked');
-
-      }
-
-      if (_self.doors[_key].hostOpened) {
-        $(this).addClass('hostOpened');
-
-      }
-
-      if (_self.doors[_key].userOpened) {
-        $(this).addClass('userOpened');
-
-      }
+        var prizeArray = _self._getRandUnique(_self._options.doorCount, _self._options.prizeCount);
 
 
-    });
 
-  }
+        for (var i = 0; i < _self._options.doorCount; i++) {
 
-  MHgame.prototype._timeline = {
+            _self.doors[i] = new Door;
+            _self.doors[i].id = i;
 
-        steps: [],
-        stepDelay: 1200,
-        currentStep: 0,
-         _playStep: function(_step,stepDelayOverride) {
-
-             var _self = this;
-  
-             var localStepDelay = _self.stepDelay;
-
-            if(typeof stepDelayOverride != 'undefined') {
-                localStepDelay = stepDelayOverride;
+            if (prizeArray.indexOf(i) > -1) {
+                _self.doors[i].hasPrize = true;
             }
 
-            /* if(MHgame.options.simulationMode) {
-                localStepDelay = 0;
-            } */
+        } 
 
+        $(_self.el).append("<ul class='stage'></ul>");
 
-             window.setTimeout(function(){
+        _self.stageElement = $(_self.el).find("ul.stage");
 
-                     _self.steps[_step].call();                 
+        console.log(_self.stageElement);
 
-                },localStepDelay);
+    }
 
-        },
-         _next: function(stepDelayOverride){
-            var _self = this;
+    MHgame.prototype._renderStage = function() {
 
+        var _self = this;
 
-            if(this.currentStep+1<steps.length) {
-                _self._playStep(this.currentStep+1,stepDelayOverride);
-                _self.currentStep++;
-            }
-
-        },
-         _back: function() {
-            var _self = this;
-            // not sure if I'll ever need this.
-            if (this.currentStep-1>0) {
-               _self._playStep(this.currentStep-1);
-               _self.currentStep--;
-            }
+        if (_self._options.simulationMode) {
+            return;
         }
 
-  }
+        if ($(_self.stageElement).find("li.door-frame").length < 1) {
 
-MHgame.prototype._userPicksDoor = function() {
+            _self._buildDoors();
 
-  _self = this;
+        } else {
+            _self._updateDoors();
+        }
+    }
 
-  $(_self.stageElement).find("li.door-frame").on("click",function(){
-      _self.doors[$(this).index()].userPicked = true;
-  });
+    MHgame.prototype._buildDoors = function() {
 
-  console.log(_self.doors);
-  _self._renderStage();
-}
+        var _self = this;
+        
+        for (var i = 0; i < _self.doors.length; i++) {
+            var doorMarkup = $("<li class='door-frame'><div class='door'></div><div class='prize-container'></div></li>\n\n");
 
-MHgame.prototype._hostOpensDoor = function() {
+            if (_self.doors[i].hasPrize) {
+                $(doorMarkup).addClass('has-prize');
+            }
 
-  var _self  = this;
+            $(_self.stageElement).append(doorMarkup);
+        }
+    }
 
-  var demo = _.omit(_self.doors,function(value,key){
-    return (_self.doors[key].userPicked = true);
-  });
+    MHgame.prototype._updateDoors = function() {
 
-  console.log("yolo: "+demo);
+        var _self = this;
 
-}
+        if (_self._options.simulationMode) {
+          return;
+        }
 
-MHgame.prototype._userOpensDoor = function() {
+        $(_self.stageElement).find('li.door-frame').each(function(_key, _val) {
 
-}
+            if (_self.doors[_key].userPicked) {
+                $(this).addClass('picked');
+            }
 
+            if (_self.doors[_key].hostOpened) {
+                $(this).addClass('opened');
+            }
 
+            if (_self.doors[_key].userOpened) {
+                $(this).addClass('opened');
+            }
 
-MHgame.prototype._timeline.steps[0] = function(){
+        });
 
-    this._buildStage();
-    this._renderStage();
-
-    console.log("make doors");
-
-    this._timeline._next(300);
-}
-
-MHgame.prototype._timeline.steps[1] = function(){
-    // user picks door
-    this._userPicksDoor();
-     this._timeline._next(300);
-}
-
-MHgame.prototype._timeline.steps[2] = function(){
-  this._hostOpensDoor();
-    // host opens door
-}
-
-MHgame.prototype._timeline.steps[3] = function(){
-    // user opens door
-}
-
-MHgame.prototype._timeline.steps[4] = {
-    // user opens door
-}
+    }
 
 
 
+    MHgame.prototype._userPicksDoor = function() {
 
-  MHgame.prototype._init = function() {
+        var _self = this;
 
-    // build stage
-    //
+        var userPickCount = {
+            true: 0,
+            false: 0
+        }
 
-    //this._start() 
+        $(_self.stageElement).find("li.door-frame").on("click", function() {
 
-    //this._start();
+            _self.doors[$(this).index()].userPicked = true;
+          
+            userPickCount = _.countBy(_self.doors, function(doorObj) {
+                return doorObj.userPicked == true;
+            })
 
-    this._timeline._playStep(0,300);
+            if (userPickCount.true >= _self._options.userDoorCount) {
 
-  }
+              console.log("user has finished picking doors");
 
-  MHgame.prototype.getRandUnique = function(randScope, randCount) {
+                $(_self.stageElement).find("li.door-frame").unbind();
+                _self._renderStage();
+
+                window.setTimeout(function() {
+                    _self.step_3();
+                }, 1500);
+
+            }
+
+        });
+
+
+
+    }
+
+    MHgame.prototype._hostOpensDoor = function() {
+
+        var _self = this;
+
+        var unpickedDoors = _.filter(_self.doors, function(doorObj) {
+            if (doorObj.userPicked == false && doorObj.hasPrize == false) {
+                return doorObj;
+            };
+        });
+
+
+        var randomDoorList = _self._getRandUnique(unpickedDoors.length, _self._options.hostDoorCount);
+
+        for (var i = 0; i < randomDoorList.length; i++) {
+
+            _self.doors[unpickedDoors[randomDoorList[i]].id].hostOpened = true;
+
+        }
+
+
+
+        console.log("host has opened a door");
+
+        console.table(_self.doors);
+
+        _self._renderStage();
+
+        window.setTimeout(function() {
+            _self.step_4();
+        }, 300);
+
+    }
+
+    MHgame.prototype._userOpensDoor = function() {
+
+        var _self = this;
+
+        $(_self.stageElement).find("li.door-frame").on("click", function() {
+
+            _self.doors[$(this).index()].userOpened = true;
+
+            console.table(_self.doors);
+
+            var userOpenCount = {
+                true: 0,
+                false: 0
+            }
+
+            var userOpenCount = _.countBy(_self.doors, function(doorObj) {
+                return doorObj.userOpened == true;
+            })
+
+            console.dir(userOpenCount)
+
+            if (userOpenCount.true >= _self._options.userDoorCount) {
+
+                console.log("user has finished opening doors");
+                console.log("user door count"+_self._options.userDoorCount);
+
+                $(_self.stageElement).find("li.door-frame").unbind("click");
+
+                _self._renderStage();
+
+                _self.step_5();
+
+            }
+
+        });
+
+    }
+
+
+
+    //function(theStep, stepDelayOverride)
+
+    MHgame.prototype._playStep = function(theStep, stepDelayOverride) {
+
+        var _self = this;
+
+        var localStepDelay = _self._options.stepDelay;
+
+        if (typeof stepDelayOverride != 'undefined') {
+            localStepDelay = stepDelayOverride;
+        }
+
+        // if simulation mode is on, skip the timeout. 
+        if (_self._options.simulationMode) {
+            // return _self.steps[theStep].call();
+        }
+
+        window.setTimeout(function() {
+
+            //_self.steps[theStep]();
+
+            theStep;
+
+            console.log("localStepDelay: " + localStepDelay);
+
+        }, localStepDelay);
+
+
+    }
+
+
+    MHgame.prototype._scoreTheGame = function() {
+
+      var _self = this;
+        //_self._userOpensDoor();
+
+       var wins = _.filter(_self.doors,function(doorObj){
+        if(doorObj.hasPrize == true && doorObj.userOpened == true) {
+          return doorObj
+        }
+       });
+
+       if (wins.length >= _self._options.winThreshold) {
+        _self._score.wins += 1;
+       }
+
+       _self._score.games += 1;
+
+       console.table(_self._score);
+
+      
+
+       window.setTimeout(function() {
+
+           _self._reset();
+
+       }, 3000);
+    }
+
+
+    MHgame.prototype._reset = function() {
+
+       var _self = this;
+
+       _self.doors = [];
+
+
+       if(!_self._options.simulationMode) {
+
+           $(_self.el).html("");
+       }
+      
+
+      _self.step_1();
+    }
+
+
+
+
+    MHgame.prototype.step_1 = function() {
+
+        var _self = this;
+
+        console.dir(_self);
+
+        _self._buildStage();
+        _self._renderStage();
+
+        window.setTimeout(function() {
+            _self.step_2();
+        }, _self._options.stepDelay);
+
+        console.log("playing step 2");
+
+
+    }
+
+    MHgame.prototype.step_2 = function() {
+
+        var _self = this;
+        _self._userPicksDoor();
+
+        console.log("playing step 3");
+
+    }
+
+
+    MHgame.prototype.step_3 = function() {
+
+        var _self = this;
+        _self._hostOpensDoor();
+
+        console.log("playing step 3");
+
+    }
+
+    MHgame.prototype.step_4 = function() {
+
+        var _self = this;
+        _self._userOpensDoor();
+
+        console.log("playing step 4");
+
+    }
+
+
+    MHgame.prototype.step_5 = function() {
+
+
+      console.log("playing step 5");
+
+        var _self = this;
+        //_self._userOpensDoor();
+
+        _self._scoreTheGame();
+
+   
+    }
+
+
+
+
+
+
+
+
+
+    MHgame.prototype._init = function() {
+
+       var _self = this;
+
+        _self._playStep(_self.step_1(), 300)
+
+    }
+
+    MHgame.prototype._getRandUnique = function(randScope, randCount) {
 
         var randNumArray = []
         while (randNumArray.length < randCount) {
             var randNum = Math.floor(Math.random() * randScope)
             if (randNumArray.indexOf(randNum) > -1) continue;
-            randNumArray[randNumArray.length] = randNum;
+            //randNumArray[randNumArray.length] = randNum;
+            randNumArray.push(randNum);
         }
         return randNumArray;
 
@@ -312,6 +461,6 @@ MHgame.prototype._timeline.steps[4] = {
 
 
 
-window.MHgame = MHgame;
+    window.MHgame = MHgame;
 
 })(window);
