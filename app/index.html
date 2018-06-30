@@ -1,131 +1,152 @@
-<!doctype html>
+<!DOCTYPE doctype html>
 <html class="no-js" lang="">
-  <head>
-    <meta charset="utf-8">
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>monty hall</title>
-
-    <link rel="apple-touch-icon" href="apple-touch-icon.png">
-    <!-- Place favicon.ico in the root directory -->
-
-    <!-- build:css styles/vendor.css -->
-    <!-- bower:css -->
-    <!-- endbower -->
-    <!-- endbuild -->
-
-    <!-- build:css styles/main.css -->
-    <link rel="stylesheet" href="styles/main.css">
-    <link  rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css"> 
-    <!-- endbuild -->
-    
-    <!-- build:js scripts/vendor/modernizr.js -->
-    <script src="/bower_components/modernizr/modernizr.js"></script>
-    <!-- endbuild -->
-  </head>
-  <body>
-    <!--[if lt IE 10]>
+    <head>
+        <meta charset="utf-8">
+            <meta content="" name="description">
+                <meta content="width=device-width, initial-scale=1" name="viewport">
+                    <title>
+                        monty hall
+                    </title>
+                    <link href="apple-touch-icon.png" rel="apple-touch-icon">
+                        <!-- Place favicon.ico in the root directory -->
+                        <!-- build:css styles/vendor.css -->
+                        <!-- bower:css -->
+                        <!-- endbower -->
+                        <!-- endbuild -->
+                        <!-- build:css styles/main.css -->
+                        <link href="styles/main.css" rel="stylesheet">
+                            <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet">
+                                <!-- endbuild -->
+                                <!-- build:js scripts/vendor/modernizr.js -->
+                                <!-- endbuild -->
+                            </link>
+                        </link>
+                    </link>
+                </meta>
+            </meta>
+        </meta>
+    </head>
+    <body>
+        <!--[if lt IE 10]>
       <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
-    
-    <div class="container">
-      <div class="header">
-        <ul class="nav nav-pills pull-right">
-          <li class="active"><a href="#">Home</a></li>
-          <li><a href="#">About</a></li>
-          <li><a href="#">Contact</a></li>
-        </ul>
-        <h3 class="text-muted">monty hall</h3>
-      </div>
-
-   <!--    <div class="jumbotron">
+        <div class="container">
+            <div class="header">
+                <ul class="nav nav-pills pull-right">
+                    <li class="active">
+                        <a href="#">
+                            Home
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            About
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            Contact
+                        </a>
+                    </li>
+                </ul>
+                <h3 class="text-muted">
+                    monty hall
+                </h3>
+            </div>
+            <!--    <div class="jumbotron">
         <h1>'Allo, 'Allo!</h1>
         <p class="lead">Always a pleasure scaffolding your apps.</p>
         <p><a class="btn btn-lg btn-success" href="#">Splendid!</a></p>
       </div> -->
-
-      <div class="row marketing">
-        <div class="col-lg-12">
-          
-          
-
-          <div class="stage-wrap">
-            
-          </div>
-
-          <button id="doorPick">Host Picks a Door</button>
-            <button id="reset">reset</button>
-
-            <p>
-              WIN %: <b class="win-pct"></b>
-            </p>
-             <p>
-              LOSSES: <b class="losses"></b>
-            </p>
-            <p>WINS: <b class="wins"></b></p>
-             <p>Games: <b class="games"></b></p>
-          
+            <div class="row marketing">
+                <div class="col-lg-12">
+                    <div class="stage-wrap">
+                    </div>
+                     <div class="stage-wrap">
+                    </div>
+                    <button id="doorPick">
+                        Host Picks a Door
+                    </button>
+                    <button id="reset">
+                        reset
+                    </button>
+                    <p>
+                        WIN %:
+                        <b class="win-pct">
+                        </b>
+                    </p>
+                    <p>
+                        LOSSES:
+                        <b class="losses">
+                        </b>
+                    </p>
+                    <p>
+                        WINS:
+                        <b class="wins">
+                        </b>
+                    </p>
+                    <p>
+                        Games:
+                        <b class="games">
+                        </b>
+                    </p>
+                </div>
+            </div>
+            <div class="footer">
+            </div>
         </div>
-      </div>
+        <!-- build:js scripts/vendor.js -->
+        <!-- bower:js -->
+        <!-- endbower -->
+        <!-- endbuild -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.js">
+        </script>
 
-      <div class="footer">
-       
-      </div>
-    </div>
-    
-    
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js"></script>
+        <!-- build:js scripts/main.js -->
+        <script src="scripts/monty-hall-4.js">
+        </script>
+        <!--   <script src="scripts/beach-head.js"></script> -->
+        <script type="text/javascript">
+            $(document).ready(function(){
 
-    <!-- build:js scripts/vendor.js -->
-    <!-- bower:js -->
-    <script src="/bower_components/jquery/dist/jquery.js"></script>
-    <!-- endbower -->
-    <!-- endbuild -->
-    
-    <!-- build:js scripts/plugins.js -->
-    <!-- <script src="/bower_components/bootstrap-sass/assets/javascripts/bootstrap/affix.js"></script>
-    <script src="/bower_components/bootstrap-sass/assets/javascripts/bootstrap/alert.js"></script>
-    <script src="/bower_components/bootstrap-sass/assets/javascripts/bootstrap/dropdown.js"></script>
-    <script src="/bower_components/bootstrap-sass/assets/javascripts/bootstrap/tooltip.js"></script>
-    <script src="/bower_components/bootstrap-sass/assets/javascripts/bootstrap/modal.js"></script>
-    <script src="/bower_components/bootstrap-sass/assets/javascripts/bootstrap/transition.js"></script>
-    <script src="/bower_components/bootstrap-sass/assets/javascripts/bootstrap/button.js"></script>
-    <script src="/bower_components/bootstrap-sass/assets/javascripts/bootstrap/popover.js"></script>
-    <script src="/bower_components/bootstrap-sass/assets/javascripts/bootstrap/carousel.js"></script>
-    <script src="/bower_components/bootstrap-sass/assets/javascripts/bootstrap/scrollspy.js"></script>
-    <script src="/bower_components/bootstrap-sass/assets/javascripts/bootstrap/collapse.js"></script>
-    <script src="/bower_components/bootstrap-sass/assets/javascripts/bootstrap/tab.js"></script> -->
-    <!-- endbuild -->
+                         var gameElement1 = $(".stage-wrap").eq(0);
 
-    <script src="/bower_components/lodash/dist/lodash.js"></script>
-    
-    <!-- build:js scripts/main.js -->
-    
-    <script src="scripts/monty-hall-4.js"></script>
-   <!--   <script src="scripts/beach-head.js"></script> -->
+
+                         var gameElement2 = $(".stage-wrap").eq(1);
+
+
+                          window.game1 = new MHgame();
+
+
+                          window.game1.init(gameElement1,{myName:"matt is a cool guy",
+                              doorCount: 3,
+                              prizeCount: 1,
+                              hostDoorCount:1,
+                              userDoorCount:1,
+                              hostKnowsPrize: false,
+                              simulationMode:false});
 
 
 
+                          window.game2 = new MHgame();
 
 
-     <script type="text/javascript">
-
-        (function(){
-
-          var gameElement = $(".stage-wrap");
-            new MHgame(gameElement,{
-              myName:"matt is a cool guy",
-              doorCount: 10,
-              prizeCount: 2,
-              hostDoorCount:1,
-              userDoorCount:1,
-              hostKnowsPrize: false,
-              simulationMode:false
-            });
-
-        })();
-    </script>
+                          window.game2.init(gameElement2,{myName:"matt is a cool guy",
+                              doorCount: 30,
+                              prizeCount: 1,
+                              hostDoorCount:1,
+                              userDoorCount:1,
+                              hostKnowsPrize: false,
+                              simulationMode:false});
 
 
-    <!-- endbuild -->
-  </body>
+
+
+
+                      });
+
+        </script>
+        <!-- endbuild -->
+    </body>
 </html>
