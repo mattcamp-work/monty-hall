@@ -53,43 +53,121 @@
                     monty hall
                 </h3>
             </div>
-            <!--    <div class="jumbotron">
-        <h1>'Allo, 'Allo!</h1>
-        <p class="lead">Always a pleasure scaffolding your apps.</p>
-        <p><a class="btn btn-lg btn-success" href="#">Splendid!</a></p>
-      </div> -->
-            <div class="row marketing">
+            <div class="row">
                 <div class="col-lg-12">
                     <div class="stage-wrap">
                     </div>
-                     <div class="stage-wrap">
+                    <div class="stage-wrap">
                     </div>
-                    <button id="doorPick">
-                        Host Picks a Door
-                    </button>
-                    <button id="reset">
-                        reset
-                    </button>
-                    <p>
-                        WIN %:
-                        <b class="win-pct">
-                        </b>
-                    </p>
-                    <p>
-                        LOSSES:
-                        <b class="losses">
-                        </b>
-                    </p>
-                    <p>
-                        WINS:
-                        <b class="wins">
-                        </b>
-                    </p>
-                    <p>
-                        Games:
-                        <b class="games">
-                        </b>
-                    </p>
+                   
+                    <div class="monty-hall">
+                        <ul class="stage">
+                            <li class="door-frame">
+                            </li>
+                            <li class="door-frame">
+                            </li>
+                            <li class="door-frame">
+                            </li>
+                            <li class="door-frame">
+                            </li>
+                        </ul>
+                        <div class="scoreboard">
+                            <div class="row">                                
+                                <div class="col-sm-3">
+                                    Games:
+                                    <span class="count--games">
+                                    </span>
+                                </div>
+                                <div class="col-sm-3">
+                                    Wins:
+                                    <span class="count--wins">
+                                    </span>
+                                </div>
+                                <div class="col-sm-3">
+                                    Losses:
+                                    <span class="count--losses">
+                                    </span>
+                                </div>                        
+                            </div>
+                        </div>
+                        <div class="dashboard">
+
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <button id="doorPick">
+                                        Host Picks a Door
+                                    </button>
+                                    <button id="reset">
+                                        reset
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <label for="doorCount">
+                                            Door Count
+                                        </label>
+                                        <input class="form-control" data-updateSettings="doorCount" id="doorCount" type="text">
+                                  
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <label for="prizeCount">
+                                            Prize Count
+                                        </label>
+                                        <input class="form-control" data-updateSettings="prizeCount" id="prizeCount" type="text">
+                                       
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <label for="winThreshold">
+                                            Win Threshold
+                                        </label>
+                                        <input class="form-control" data-updateSettings="winThreshold" id="winThreshold" type="text">
+                                      
+                                    </div>
+                                </div>
+                            </div><!-- ./ end row -->
+                            <div class="row">
+                                
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <label for="doorCount">
+                                            Host Door Count
+                                        </label>
+                                        <input class="form-control" data-updateSettings="hostDoorCount" id="hostDoorCount" type="text">
+                                  
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <label for="doorCount">
+                                            Contestant Door Count
+                                        </label>
+                                        <input class="form-control" data-updateSettings="userDoorCount" id="userDoorCount" type="text">
+                                       
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <label for="doorCount">
+                                            Host Knows Prize
+                                        </label>
+                                        <select data-updateSettings="hostKnowsPrize" class="form-control">
+                                            <option value="true">True</option>
+                                            <option value="false" selected>False</option>
+                                        </select>
+                                      
+                                    </div>
+                                </div>
+                            
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="footer">
@@ -101,25 +179,27 @@
         <!-- endbuild -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.js">
         </script>
-
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js">
+        </script>
         <!-- build:js scripts/main.js -->
         <script src="scripts/monty-hall-4.js">
         </script>
         <!--   <script src="scripts/beach-head.js"></script> -->
+        <script id="door" type="text/template">
+        </script>
+        <script id="game" type="text/template">
+        </script>
+        <script id="dashboard" type="text/template">
+        </script>
+        <script id="progress" type="text/template">
+        </script>
         <script type="text/javascript">
-            $(document).ready(function(){
-
-                         var gameElement1 = $(".stage-wrap").eq(0);
-
-
-                         var gameElement2 = $(".stage-wrap").eq(1);
-
+            $(document).ready(function(){          
 
                           window.game1 = new MHgame();
 
-
-                          window.game1.init(gameElement1,{myName:"matt is a cool guy",
+                          window.game1.init($(".stage-wrap").eq(0),
+                            {myName:"matt is a cool guy",
                               doorCount: 3,
                               prizeCount: 1,
                               hostDoorCount:1,
@@ -127,25 +207,7 @@
                               hostKnowsPrize: false,
                               simulationMode:false});
 
-
-
-                          window.game2 = new MHgame();
-
-
-                          window.game2.init(gameElement2,{myName:"matt is a cool guy",
-                              doorCount: 30,
-                              prizeCount: 1,
-                              hostDoorCount:1,
-                              userDoorCount:1,
-                              hostKnowsPrize: false,
-                              simulationMode:false});
-
-
-
-
-
                       });
-
         </script>
         <!-- endbuild -->
     </body>

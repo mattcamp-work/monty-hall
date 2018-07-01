@@ -33,6 +33,7 @@ I now need
         go line by line and refamiliarize myself with what is happening
         I think it works pretty well, but the timing is weird
         install promises on the steps
+        Sort out the app thing, the build process and gulp or whatever the fuck. Move off of code kit. 
     With all this up. What's the fastest way to get this published.
     Look into existing publishin mechanisms that might get you more reach.  
 
@@ -41,6 +42,7 @@ I now need
 'use strict';
 var MHgame = function() {};
 MHgame.prototype.init = function(el, options) {
+    var _this = this;
     this.el = el;
     this._options = $.extend({}, this._defaultOptions, options);
     this._score = {
@@ -50,9 +52,14 @@ MHgame.prototype.init = function(el, options) {
             return this.games - this.wins
         }
     }
-    this._playStep(this.step_1(), 300);
-    this.defineSteps();
+    this._playStep(_this.step_1)
 }
+
+MHgame.prototype.defineHTMLWrappers = function() {
+
+}
+
+
 MHgame.prototype._defaultOptions = {
     doorCount: 3,
     prizeCount: 1,
@@ -61,31 +68,40 @@ MHgame.prototype._defaultOptions = {
     winThreshhold: 1,
     hostKnowsPrize: false,
     simulationMode: false,
-    stepDelay: 100,
+    stepDelay: 3000,
+    templates: {
+        door: '#door',
+        game: '#game',
+        dashboard: '#dashboard',
+        progress: '#progress'
+    },
     check: function() {
         return (this.doorCount >= (this.hostOpenCount + this.userOpenCount)) && (this.winThreshold <= this.prizeCount);
     }
 }
 MHgame.prototype._buildStage = function() {
     var _self = this;
+    this._buildDoorObj();
+    $(_self.el).append("<ul class='stage'></ul>");
+    _self.stageElement = $(_self.el).find("ul.stage");
+}
+MHgame.prototype._buildDoorObj = function() {
+    var _self = this;
     _self.doors = [];
-    var Door = function() {};
-    Door.prototype.hasPrize = false;
-    Door.prototype.userPicked = false;
-    Door.prototype.hostOpened = false;
-    Door.prototype.userOpened = false;
-    Door.prototype.id = 0;
-    var prizeArray = _self._getRandUnique(_self._options.doorCount, _self._options.prizeCount);
+    var door = {
+        hasPrize: false,
+        userPicked: false,
+        hostOpened: false,
+        userOpened: false
+    }
+    var prizeArray = _self.utils._getRandUnique(_self._options.doorCount, _self._options.prizeCount);
     for (var i = 0; i < _self._options.doorCount; i++) {
-        _self.doors[i] = new Door;
+        _self.doors[i] = $.extend({}, door);
         _self.doors[i].id = i;
         if (prizeArray.indexOf(i) > -1) {
             _self.doors[i].hasPrize = true;
         }
     }
-    $(_self.el).append("<ul class='stage'></ul>");
-    _self.stageElement = $(_self.el).find("ul.stage");
-    console.log(_self.stageElement);
 }
 MHgame.prototype._renderStage = function() {
     var _self = this;
@@ -137,12 +153,9 @@ MHgame.prototype._userPicksDoor = function() {
             return doorObj.userPicked == true;
         })
         if (userPickCount.true >= _self._options.userDoorCount) {
-            console.log("user has finished picking doors");
             $(_self.stageElement).find("li.door-frame").unbind();
             _self._renderStage();
-            window.setTimeout(function() {
-                _self.step_3();
-            }, 1500);
+            _self._playStep(_self.step_3);
         }
     });
 }
@@ -153,33 +166,21 @@ MHgame.prototype._hostOpensDoor = function() {
             return doorObj;
         };
     });
-    var randomDoorList = _self._getRandUnique(unpickedDoors.length, _self._options.hostDoorCount);
+    var randomDoorList = _self.utils._getRandUnique(unpickedDoors.length, _self._options.hostDoorCount);
     for (var i = 0; i < randomDoorList.length; i++) {
         _self.doors[unpickedDoors[randomDoorList[i]].id].hostOpened = true;
     }
-    console.log("host has opened a door");
-    console.table(_self.doors);
     _self._renderStage();
-    window.setTimeout(function() {
-        _self.step_4();
-    }, 300);
+    _self._playStep(_self.step_4());
 }
 MHgame.prototype._userOpensDoor = function() {
     var _self = this;
     $(_self.stageElement).find("li.door-frame").on("click", function() {
         _self.doors[$(this).index()].userOpened = true;
-        console.table(_self.doors);
-        var userOpenCount = {
-            true: 0,
-            false: 0
-        }
         var userOpenCount = _.countBy(_self.doors, function(doorObj) {
             return doorObj.userOpened == true;
         })
-        console.dir(userOpenCount)
         if (userOpenCount.true >= _self._options.userDoorCount) {
-            console.log("user has finished opening doors");
-            console.log("user door count" + _self._options.userDoorCount);
             $(_self.stageElement).find("li.door-frame").unbind("click");
             _self._renderStage();
             _self.step_5();
@@ -190,6 +191,7 @@ MHgame.prototype._userOpensDoor = function() {
 MHgame.prototype._playStep = function(theStep, stepDelayOverride) {
     var _self = this;
     var localStepDelay = _self._options.stepDelay;
+    //debugger
     if (typeof stepDelayOverride != 'undefined') {
         localStepDelay = stepDelayOverride;
     }
@@ -198,9 +200,8 @@ MHgame.prototype._playStep = function(theStep, stepDelayOverride) {
         // return _self.steps[theStep].call();
     }
     window.setTimeout(function() {
-        //_self.steps[theStep]();
-        theStep;
-        console.log("localStepDelay: " + localStepDelay);
+        //     console.log('fired');
+        return theStep;
     }, localStepDelay);
 }
 MHgame.prototype._scoreTheGame = function() {
@@ -215,7 +216,7 @@ MHgame.prototype._scoreTheGame = function() {
         _self._score.wins += 1;
     }
     _self._score.games += 1;
-    console.table(_self._score);
+    alert(_self._score);
     window.setTimeout(function() {
         _self._reset();
     }, 3000);
@@ -228,58 +229,86 @@ MHgame.prototype._reset = function() {
     }
     _self.step_1();
 }
+MHgame.prototype.setItAllUp = function() {
+    this._buildStage();
+    this._renderStage();
+}
 MHgame.prototype.step_1 = function() {
-    var _self = this;
-    console.dir(_self);
-    _self._buildStage();
-    _self._renderStage();
-    window.setTimeout(function() {
-        _self.step_2();
-    }, _self._options.stepDelay);
-    console.log("playing step 2");
+    _self.setItAllUp();
+    _self._playStep(_self.step_2());
+    console.log("moving to step 2");
 }
 MHgame.prototype.step_2 = function() {
-    var _self = this;
     _self._userPicksDoor();
-    console.log("playing step 3");
+    console.log("moving to step 3");
 }
 MHgame.prototype.step_3 = function() {
-    var _self = this;
     this._hostOpensDoor();
+    console.log("moving to step 4");
 }
 MHgame.prototype.step_4 = function() {
-    var _self = this;
     this._userOpensDoor();
-    console.log("playing step 4");
+    console.log("moving to step 5");
 }
 MHgame.prototype.step_5 = function() {
     this._scoreTheGame();
-    console.log("playing step 5");
+    console.log("game done");
 }
-MHgame.prototype.defineSteps = function() {
-    var Step = function(_thing) {
-        return {
-            done: true,
-            thing: _thing
+MHgame.prototype._buildSteps = function() {
+    var steps = [
+        //
+        (function() {
+            // step 1                
+            this.setItAllUp();
+            console.log('moving to step 2');
+        }).bind(this), (function() {
+            // step 2
+            this._userPicksDoor();
+            console.log('moving to step 3');
+        }).bind(this), (function() {
+            // step 3            
+            this._hostOpensDoor();
+            console.log('moving to step 4');
+        }).bind(this), (function() {
+            // step 4
+            this._userOpensDoor();
+            console.log('moving to step 5');
+        }).bind(this), (function() {
+            // step 5            
+            this._scoreTheGame();
+            console.log('game done');
+        }).bind(this)
+    ]
+    this.steps = steps;
+}
+MHgame.prototype.updateDashboardView = function() {
+    var _self = this;
+    $(parentElement).find('.dashboard-wrapper').find('input[type="text"][data-updateSettings]').each(function() {
+        var thisSetting = $(this).data('data-updateSettings');
+        $(this).val(_self.settings[thisSetting]);
+    });
+}
+MHgame.prototype.setDashboardBindings = function() {
+    var _self = this;
+    $(parentElement).find('.dashboard-wrapper').filter('input[type="text"],input[type="number"],input[type="tel"]').on('click', '[data-updateSettings]', function(event) {
+        _self.settings[$(event.target).data('data-updateSettings')] = $(this).val();
+    });
+    $(parentElement).find('.dashboard-wrapper').on('change', 'select[data-updateSettings]', function(event) {
+        _self.settings[$(event.target).data('data-updateSettings')] = $(this).val();
+    });
+}
+
+MHgame.prototype.utils = {
+    _getRandUnique: function(randScope, randCount) {
+        var randNumArray = []
+        while (randNumArray.length < randCount) {
+            var randNum = Math.floor(Math.random() * randScope)
+            if (randNumArray.indexOf(randNum) > -1) continue;
+            //randNumArray[randNumArray.length] = randNum;
+            randNumArray.push(randNum);
         }
-    };
-    var steps = {
-        step1: new Step("step 1"),
-        step2: new Step("step 2"),
-        step3: new Step("step 3")
+        return randNumArray;
     }
-    for (var _step in steps) {
-        steps[_step];
-    }
-    console.log(steps);
 }
-MHgame.prototype._getRandUnique = function(randScope, randCount) {
-    var randNumArray = []
-    while (randNumArray.length < randCount) {
-        var randNum = Math.floor(Math.random() * randScope)
-        if (randNumArray.indexOf(randNum) > -1) continue;
-        //randNumArray[randNumArray.length] = randNum;
-        randNumArray.push(randNum);
-    }
-    return randNumArray;
-}
+
+
